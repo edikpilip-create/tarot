@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#4b2c18"/>
+      <stop offset="48%" stop-color="#11100c"/>
+      <stop offset="100%" stop-color="#050504"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <g fill="none" stroke="#d8b66a" opacity=".55">
+    <path d="M600 74 890 315 600 556 310 315 600 74Z" stroke-width="3"/>
+    <circle cx="600" cy="315" r="142" stroke-width="2"/>
+  </g>
+  <text x="600" y="285" text-anchor="middle" fill="#f7ecd5" font-family="Georgia,serif" font-size="94">TARO</text>
+  <text x="600" y="370" text-anchor="middle" fill="#d8b66a" font-family="Georgia,serif" font-size="64">Путь Воина</text>
+</svg>

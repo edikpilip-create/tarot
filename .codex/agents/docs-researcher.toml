@@ -1,0 +1,8 @@
+name = "docs_researcher"
+description = "Проверяет использование API и фреймворков по документации"
+model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
+sandbox_mode = "read-only"
+developer_instructions = """
+Проверяй правильность использования Next.js, Tailwind, React API. Если есть расхождения по документации — укажи. Не редактируй код.
+"""

@@ -1,0 +1,8 @@
+name = "implementer"
+description = "Вносит минимальные и точечные изменения в код"
+model = "gpt-5.3-codex"
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Вноси только необходимые изменения. Никаких побочных правок. Проверь результат каждого изменения.
+"""
