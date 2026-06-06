@@ -1,0 +1,116 @@
+import { type Locale } from "./i18n/config.ts";
+
+import { spreadCardIds, type SpreadCardId } from "./spread-cards.ts";
+
+type CarouselAsset = {
+  id: string;
+  frontSrc: string;
+  backSrc: string;
+};
+
+type FeaturedVideoAsset = {
+  embedUrl: string;
+};
+
+export type LocalizedAssets = {
+  hero: {
+    maskSrc: string;
+  };
+  practice: {
+    visualSrc: string;
+  };
+  textures: {
+    ancientArchiveSrc: string;
+  };
+  carouselCards: CarouselAsset[];
+  featuredVideos: {
+    primary: FeaturedVideoAsset;
+    secondary: FeaturedVideoAsset;
+  };
+  spreadCardImages: Record<SpreadCardId, string>;
+};
+
+const sharedAssets = {
+  hero: {
+    maskSrc: "/media/warrior-mask.png",
+  },
+  practice: {
+    visualSrc: "/media/practice-89.avif",
+  },
+  textures: {
+    ancientArchiveSrc: "/media/ancient-archive-texture.jpg",
+  },
+  carouselCards: [
+    {
+      id: "card-1",
+      frontSrc: "/media/carousel-lovers.webp",
+      backSrc: "/media/carousel-lovers-back.webp",
+    },
+    {
+      id: "card-2",
+      frontSrc: "/media/carousel-mage.webp",
+      backSrc: "/media/carousel-mage-back.webp",
+    },
+    {
+      id: "card-3",
+      frontSrc: "/media/carousel-power.webp",
+      backSrc: "/media/carousel-power-back.webp",
+    },
+    {
+      id: "card-4",
+      frontSrc: "/media/carousel-sun.webp",
+      backSrc: "/media/carousel-power-back.webp",
+    },
+    {
+      id: "card-5",
+      frontSrc: "/media/carousel-zhrica.webp",
+      backSrc: "/media/carousel-zhrica-back.webp",
+    },
+    {
+      id: "card-6",
+      frontSrc: "/media/carousel-otshelnik.webp",
+      backSrc: "/media/carousel-otshelnik-back.webp",
+    },
+  ] satisfies CarouselAsset[],
+  featuredVideos: {
+    primary: {
+      embedUrl: "https://player.vimeo.com/video/1196251431?autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&badge=0&transparent=0&dnt=1",
+    },
+    secondary: {
+      embedUrl: "https://player.vimeo.com/video/1196251432?autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&badge=0&transparent=0&dnt=1",
+    },
+  },
+} as const;
+
+const localeOverrides: Partial<Record<Locale, Partial<LocalizedAssets>>> = {};
+
+export function getLocalizedAssets(locale: Locale): LocalizedAssets {
+  const overrides = localeOverrides[locale];
+
+  return {
+    hero: {
+      maskSrc: overrides?.hero?.maskSrc ?? sharedAssets.hero.maskSrc,
+    },
+    practice: {
+      visualSrc: overrides?.practice?.visualSrc ?? sharedAssets.practice.visualSrc,
+    },
+    textures: {
+      ancientArchiveSrc: overrides?.textures?.ancientArchiveSrc ?? sharedAssets.textures.ancientArchiveSrc,
+    },
+    carouselCards: overrides?.carouselCards ?? [...sharedAssets.carouselCards],
+    featuredVideos: {
+      primary: overrides?.featuredVideos?.primary ?? sharedAssets.featuredVideos.primary,
+      secondary: overrides?.featuredVideos?.secondary ?? sharedAssets.featuredVideos.secondary,
+    },
+    spreadCardImages: buildSpreadCardImages(),
+  };
+}
+
+function buildSpreadCardImages(): Record<SpreadCardId, string> {
+  return Object.fromEntries(
+    spreadCardIds.map((id, index) => [
+      id,
+      `/media/spread-card-${String(index + 1).padStart(2, "0")}.webp`,
+    ]),
+  ) as Record<SpreadCardId, string>;
+}

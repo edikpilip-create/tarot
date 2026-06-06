@@ -1,0 +1,162 @@
+{
+  "locale": {
+    "code": "en",
+    "name": "English",
+    "nativeName": "English"
+  },
+  "meta": {
+    "title": "TARO “The Path of the Warrior” | Author Deck",
+    "description": "The TARO “Path of the Warrior” author deck: arcana, awareness practices, Toltec wisdom, and an interactive spread.",
+    "keywords": ["tarot", "Path of the Warrior", "author deck", "Toltec wisdom", "Castaneda", "tarot spread"],
+    "siteName": "TARO “The Path of the Warrior”",
+    "ogDescription": "The cards in your hands are not answers. They are doors.",
+    "twitterDescription": "An author tarot deck as a guide into awareness practice.",
+    "ogImageAlt": "TARO The Path of the Warrior"
+  },
+  "nav": {
+    "ariaLabel": "Primary navigation"
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Language switcher"
+  },
+  "carousel": {
+    "ariaLabel": "Card carousel",
+    "cards": [
+      { "id": "card-1", "frontAlt": "The Lovers", "backAlt": "The Lovers card back" },
+      { "id": "card-2", "frontAlt": "The Magician", "backAlt": "The Magician card back" },
+      { "id": "card-3", "frontAlt": "Strength", "backAlt": "Strength card back" },
+      { "id": "card-4", "frontAlt": "The Sun", "backAlt": "The Sun card back" },
+      { "id": "card-5", "frontAlt": "The Priestess", "backAlt": "The Priestess card back" },
+      { "id": "card-6", "frontAlt": "The Hermit", "backAlt": "The Hermit card back" }
+    ]
+  },
+  "buttons": {
+    "brand": "TARO",
+    "navWisdom": "Teaching",
+    "navStructure": "Deck",
+    "navSpread": "Spread",
+    "navContact": "Inquiry",
+    "heroCta": "Draw 3 cards",
+    "spreadDraw": "Draw cards",
+    "submitIdle": "Send inquiry",
+    "submitSending": "Sending..."
+  },
+  "hero": {
+    "overline": "“The leap into infinity begins here”",
+    "titlePrefix": "TARO",
+    "title": "“The Path of the Warrior”",
+    "lead": "The cards you hold are not answers but doors. Behind each one waits a step that will change you forever."
+  },
+  "wisdom": {
+    "heading": "Ancient Toltec wisdom",
+    "body": [
+      "The original TARO “Path of the Warrior” was created as a guide into the world of Toltec teachings and traditions. The deck unites an adaptation of tarot structure with ancient knowledge about the Warrior’s path."
+    ],
+    "accent": "Mastery, intent, recapitulation, control of attention, and the shift of the assemblage point.",
+    "sparkle": "TARO “Path of the Warrior” reveals this knowledge through the Arcana even if you have never read Carlos Castaneda.",
+    "finalAccent": "Every card is a lesson in power and a step toward transformation."
+  },
+  "practiceGate": {
+    "eyebrow": "Fourth screen",
+    "heading": "Each card is a gate into practice",
+    "paragraphs": [
+      "Take an Arcana, study its essence, and apply it in your life. Then the teaching stops being mere text and becomes your own experience.",
+      "That is how the Arcana become guides on the warrior’s path, revealing the mystery of perception, energy, and freedom step by step."
+    ],
+    "quote": "There is only one path, and it leads into the unknown. But you must walk it yourself, with open eyes, without fear and without self-pity.",
+    "quoteAuthor": "Don Juan Matus"
+  },
+  "featuredVideos": {
+    "primary": {
+      "title": "XX. Judgement",
+      "subtitle": "(Major Arcana)",
+      "quote": "The warrior’s path is a path of rebirth. Each time one grasps a new truth, the old world dies and a new one is born.",
+      "quoteSource": "“The Fire from Within”",
+      "description": "Judgement symbolizes rebirth, final realization, and the passage into a new level of spiritual development. It speaks directly to Castaneda’s idea that awareness leads to inner renewal.",
+      "iframeTitle": "Path of the Warrior arcana example"
+    },
+    "secondary": {
+      "title": "Two of Cups",
+      "subtitle": "(Minor Arcana)",
+      "quote": "A warrior knows that a true union is the joining of two souls striving toward one aim. Such a union makes them stronger.",
+      "quoteSource": "“Journey to Ixtlan”",
+      "description": "The Two of Cups symbolizes love, harmony, and spiritual partnership. The quote reflects a deep unity that makes people stronger on their path.",
+      "iframeTitle": "Two of Cups example"
+    }
+  },
+  "structure": {
+    "eyebrow": "Seventh screen",
+    "heading": "Deck structure",
+    "description": "The deck consists of 22 Major Arcana and 56 Minor Arcana divided into four suits.",
+    "elementLabel": "Element",
+    "totemsLabel": "Totems",
+    "stats": [
+      { "value": "22", "label": "Major Arcana", "text": "Stages and concepts of the Warrior’s path." },
+      { "value": "56", "label": "Minor Arcana", "text": "The practice of power through four suits." }
+    ]
+  },
+  "suits": [
+    { "name": "Swords", "element": "Air", "totems": "raven and eagle", "text": "Intellect and clarity, spiritual insight, and the ability to see beyond the possible." },
+    { "name": "Wands", "element": "Fire", "totems": "jaguar and panther", "text": "Energy, willpower, creative momentum, and the impulse to act." },
+    { "name": "Pentacles", "element": "Earth", "totems": "bull and bison", "text": "Practicality, labor, achievement, and balance between spirit and matter." },
+    { "name": "Cups", "element": "Water", "totems": "fish and dolphins", "text": "Emotion, intuition, the search for deep meaning, philosophy, and inner harmony." }
+  ],
+  "practiceSection": {
+    "heading": "The deck as a practice instrument",
+    "description": "Each card is a practice of awareness."
+  },
+  "practiceCards": [
+    { "name": "The Magician", "text": "directing attention and energy" },
+    { "name": "The High Priestess", "text": "Silent Knowledge" },
+    { "name": "Strength", "text": "growing personal power through emotional control" },
+    { "name": "The Hanged Man", "text": "the experience of shifting the assemblage point" },
+    { "name": "Death", "text": "transition into a new state" },
+    { "name": "The Star", "text": "alignment with the Second Attention and Intent" }
+  ],
+  "spread": {
+    "heading": "Interactive card spread",
+    "description": "Press the button to draw 3 cards at random from a 21-card deck and receive a short reading for each one.",
+    "cards": [
+      { "id": "mag", "title": "The Magician", "description": "Gather your attention into one point and take the first precise step.", "imageAlt": "The Magician card" },
+      { "id": "high-priestess", "title": "The High Priestess", "description": "Listen to the knowledge that arrives before words.", "imageAlt": "The High Priestess card" },
+      { "id": "empress", "title": "The Empress", "description": "Let the form ripen without forcing the natural motion of power.", "imageAlt": "The Empress card" },
+      { "id": "emperor", "title": "The Emperor", "description": "Check the boundaries and reclaim your right to act.", "imageAlt": "The Emperor card" },
+      { "id": "hierophant", "title": "The Hierophant", "description": "Separate living knowledge from familiar dogma.", "imageAlt": "The Hierophant card" },
+      { "id": "lovers", "title": "The Lovers", "description": "Choose the union that strengthens your path.", "imageAlt": "The Lovers card" },
+      { "id": "chariot", "title": "The Chariot", "description": "Direct your energy where a breakthrough is needed.", "imageAlt": "The Chariot card" },
+      { "id": "strength", "title": "Strength", "description": "Hold emotion without suppression and without surrender.", "imageAlt": "Strength card" },
+      { "id": "hermit", "title": "The Hermit", "description": "Step inward to see the outer road more clearly.", "imageAlt": "The Hermit card" },
+      { "id": "wheel-of-fortune", "title": "Wheel of Fortune", "description": "Notice the cycle and enter it consciously.", "imageAlt": "Wheel of Fortune card" },
+      { "id": "justice", "title": "Justice", "description": "Name the true price of the choice and accept it.", "imageAlt": "Justice card" },
+      { "id": "hanged-man", "title": "The Hanged Man", "description": "Shift your point of view until the situation opens another meaning.", "imageAlt": "The Hanged Man card" },
+      { "id": "death", "title": "Death", "description": "Release the form that has already fulfilled its task.", "imageAlt": "Death card" },
+      { "id": "temperance", "title": "Temperance", "description": "Gather opposites into one calm movement.", "imageAlt": "Temperance card" },
+      { "id": "devil", "title": "The Devil", "description": "See the attachment that disguises itself as necessity.", "imageAlt": "The Devil card" },
+      { "id": "tower", "title": "The Tower", "description": "Let the false support collapse without bargaining with truth.", "imageAlt": "The Tower card" },
+      { "id": "star", "title": "The Star", "description": "Trust the intent that leads beyond fear.", "imageAlt": "The Star card" },
+      { "id": "moon", "title": "The Moon", "description": "Move slowly: uncertainty can also be a guide.", "imageAlt": "The Moon card" },
+      { "id": "sun", "title": "The Sun", "description": "Act openly when power no longer needs a mask.", "imageAlt": "The Sun card" },
+      { "id": "judgement", "title": "Judgement", "description": "Accept rebirth and do not return to the old role.", "imageAlt": "Judgement card" },
+      { "id": "world", "title": "The World", "description": "Complete the circle and claim experience as a new freedom.", "imageAlt": "The World card" }
+    ]
+  },
+  "contact": {
+    "eyebrow": "Inquiry",
+    "heading": "Request the deck or ask a question",
+    "description": "Leave your contact details and the inquiry will be sent to Telegram through the server API route. The bot token and chat id stay in environment variables on your VPS or Dokploy host."
+  },
+  "form": {
+    "nameLabel": "Name",
+    "contactLabel": "Telegram, phone, or email",
+    "messageLabel": "Message"
+  },
+  "feedback": {
+    "sent": "Your inquiry has been sent.",
+    "error": "The inquiry could not be sent. Check the Telegram configuration.",
+    "api": {
+      "validation": "Please provide a name and contact.",
+      "serverMisconfigured": "Telegram is not configured on the server.",
+      "deliveryFailed": "The inquiry could not be delivered."
+    }
+  }
+}

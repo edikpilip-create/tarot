@@ -1,30 +1,15 @@
 import { NextResponse } from "next/server";
 
-type LeadPayload = {
-  name?: string;
-  contact?: string;
-  message?: string;
-};
-
-const escapeHtml = (value: string) =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+import { formatTelegramMessage, getApiErrorMessage, validateLeadPayload } from "@/lib/telegram";
 
 export async function POST(request: Request) {
-  const payload = (await request.json().catch(() => null)) as LeadPayload | null;
+  const payload = await request.json().catch(() => null);
+  const validation = validateLeadPayload(payload);
 
-  if (
-    !payload ||
-    typeof payload.name !== "string" ||
-    typeof payload.contact !== "string" ||
-    !payload.name.trim() ||
-    !payload.contact.trim()
-  ) {
+  if (!validation.ok) {
     return NextResponse.json(
-      { ok: false, message: "Заполните имя и контакт." },
-      { status: 400 },
+      { ok: false, message: validation.message },
+      { status: validation.status }
     );
   }
 
@@ -33,38 +18,26 @@ export async function POST(request: Request) {
 
   if (!token || !chatId) {
     return NextResponse.json(
-      { ok: false, message: "Telegram не настроен на сервере." },
-      { status: 500 },
+      { ok: false, message: getApiErrorMessage(validation.data.languageCode, "serverMisconfigured") },
+      { status: 500 }
     );
   }
-
-  const text = [
-    "<b>Новая заявка с лендинга TARO «Путь Воина»</b>",
-    "",
-    `<b>Имя:</b> ${escapeHtml(payload.name.trim())}`,
-    `<b>Контакт:</b> ${escapeHtml(payload.contact.trim())}`,
-    typeof payload.message === "string" && payload.message.trim()
-      ? `<b>Сообщение:</b> ${escapeHtml(payload.message.trim())}`
-      : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
 
   const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: chatId,
-      text,
+      text: formatTelegramMessage(validation.data),
       parse_mode: "HTML",
-      disable_web_page_preview: true,
-    }),
+      disable_web_page_preview: true
+    })
   });
 
   if (!response.ok) {
     return NextResponse.json(
-      { ok: false, message: "Не удалось отправить заявку." },
-      { status: 502 },
+      { ok: false, message: getApiErrorMessage(validation.data.languageCode, "deliveryFailed") },
+      { status: 502 }
     );
   }
 
