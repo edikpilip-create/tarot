@@ -78,6 +78,10 @@ export function buildLocalizedPath(pathname: string, targetLocale: Locale, hash?
   return `${basePath}${normalizeHash(hash)}`;
 }
 
+export function buildLanguageSwitcherPath(pathname: string, targetLocale: Locale, hash?: string): string {
+  return buildLocalizedPath(pathname, targetLocale, hash);
+}
+
 function normalizeHash(hash?: string): string {
   if (!hash) {
     return "";

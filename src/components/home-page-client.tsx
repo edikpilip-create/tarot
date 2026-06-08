@@ -225,7 +225,11 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
               {dictionary.buttons.navContact}
             </a>
           </nav>
-          <LanguageSwitcher currentLocale={lang} ariaLabel={dictionary.languageSwitcher.ariaLabel} />
+          <LanguageSwitcher
+            currentLocale={lang}
+            ariaLabel={dictionary.languageSwitcher.ariaLabel}
+            labels={dictionary.languageSwitcher.labels}
+          />
         </div>
       </header>
 

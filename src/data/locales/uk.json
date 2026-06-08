@@ -17,7 +17,12 @@
     "ariaLabel": "Основна навігація"
   },
   "languageSwitcher": {
-    "ariaLabel": "Перемикач мови"
+    "ariaLabel": "Перемикач мови",
+    "labels": {
+      "en": "EN",
+      "uk": "UK",
+      "ru": "RU"
+    }
   },
   "carousel": {
     "ariaLabel": "Карусель карт",

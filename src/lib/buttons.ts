@@ -1,3 +1,5 @@
+import type { Locale } from "./i18n/config.ts";
+
 export const buttonRegistry = {
   brand: {
     id: "brand-home",
@@ -30,6 +32,21 @@ export const buttonRegistry = {
     id: "submit-lead-form",
   },
 } as const;
+
+export const languageSwitcherButtonRegistry: Record<Locale, { id: string; locale: Locale }> = {
+  en: {
+    id: "lang-switch-en",
+    locale: "en",
+  },
+  uk: {
+    id: "lang-switch-uk",
+    locale: "uk",
+  },
+  ru: {
+    id: "lang-switch-ru",
+    locale: "ru",
+  },
+};
 
 export const formRegistry = {
   lead: {

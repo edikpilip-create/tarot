@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
 import { type Locale } from "./i18n/config.ts";
 
 import { spreadCardIds, type SpreadCardId } from "./spread-cards.ts";
@@ -83,6 +86,7 @@ const sharedAssets = {
 } as const;
 
 const localeOverrides: Partial<Record<Locale, Partial<LocalizedAssets>>> = {};
+const publicMediaDirectory = join(process.cwd(), "public", "media");
 
 export function getLocalizedAssets(locale: Locale): LocalizedAssets {
   const overrides = localeOverrides[locale];
@@ -97,20 +101,55 @@ export function getLocalizedAssets(locale: Locale): LocalizedAssets {
     textures: {
       ancientArchiveSrc: overrides?.textures?.ancientArchiveSrc ?? sharedAssets.textures.ancientArchiveSrc,
     },
-    carouselCards: overrides?.carouselCards ?? [...sharedAssets.carouselCards],
+    // Localized carousel files live in /public/media/locales/{lang}/carousel/
+    // using the same filenames as the shared /public/media/ fallback assets.
+    carouselCards: overrides?.carouselCards ?? buildCarouselCards(locale),
     featuredVideos: {
       primary: overrides?.featuredVideos?.primary ?? sharedAssets.featuredVideos.primary,
       secondary: overrides?.featuredVideos?.secondary ?? sharedAssets.featuredVideos.secondary,
     },
-    spreadCardImages: buildSpreadCardImages(),
+    // Localized spread files live in /public/media/locales/{lang}/spread/
+    // using spread-card-01.webp ... spread-card-21.webp.
+    spreadCardImages: buildSpreadCardImages(locale),
   };
 }
 
-function buildSpreadCardImages(): Record<SpreadCardId, string> {
+function buildCarouselCards(locale: Locale): CarouselAsset[] {
+  return sharedAssets.carouselCards.map((card) => ({
+    ...card,
+    frontSrc: resolveLocalizedMediaPath(locale, "carousel", getFileName(card.frontSrc), card.frontSrc),
+    backSrc: resolveLocalizedMediaPath(locale, "carousel", getFileName(card.backSrc), card.backSrc),
+  }));
+}
+
+function buildSpreadCardImages(locale: Locale): Record<SpreadCardId, string> {
   return Object.fromEntries(
     spreadCardIds.map((id, index) => [
       id,
-      `/media/spread-card-${String(index + 1).padStart(2, "0")}.webp`,
+      resolveLocalizedMediaPath(
+        locale,
+        "spread",
+        `spread-card-${String(index + 1).padStart(2, "0")}.webp`,
+        `/media/spread-card-${String(index + 1).padStart(2, "0")}.webp`,
+      ),
     ]),
   ) as Record<SpreadCardId, string>;
+}
+
+function resolveLocalizedMediaPath(
+  locale: Locale,
+  category: "carousel" | "spread",
+  fileName: string,
+  fallbackPath: string,
+): string {
+  const localizedRelativePath = `/media/locales/${locale}/${category}/${fileName}`;
+  const localizedAbsolutePath = join(publicMediaDirectory, "locales", locale, category, fileName);
+
+  return existsSync(localizedAbsolutePath) ? localizedRelativePath : fallbackPath;
+}
+
+function getFileName(publicPath: string): string {
+  const parts = publicPath.split("/");
+
+  return parts[parts.length - 1] ?? publicPath;
 }

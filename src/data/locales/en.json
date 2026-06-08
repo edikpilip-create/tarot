@@ -17,7 +17,12 @@
     "ariaLabel": "Primary navigation"
   },
   "languageSwitcher": {
-    "ariaLabel": "Language switcher"
+    "ariaLabel": "Language switcher",
+    "labels": {
+      "en": "EN",
+      "uk": "UK",
+      "ru": "RU"
+    }
   },
   "carousel": {
     "ariaLabel": "Card carousel",

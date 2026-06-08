@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   buildLocalizedPath,
+  buildLanguageSwitcherPath,
   detectPreferredLocale,
   getLocaleName,
   getSupportedLocales,
@@ -34,4 +35,11 @@ test("buildLocalizedPath swaps locale segments and preserves hash fragments", ()
   assert.equal(buildLocalizedPath("/uk", "en", "#spread"), "/en#spread");
   assert.equal(buildLocalizedPath("/ru", "uk"), "/uk");
   assert.equal(buildLocalizedPath("/en/contact", "ru", "#contact"), "/ru/contact#contact");
+});
+
+test("buildLanguageSwitcherPath changes locale and preserves section hashes", () => {
+  assert.equal(buildLanguageSwitcherPath("/ru", "en", "#spread"), "/en#spread");
+  assert.equal(buildLanguageSwitcherPath("/uk", "ru", "#contact"), "/ru#contact");
+  assert.equal(buildLanguageSwitcherPath("/en", "uk", "#hero"), "/uk#hero");
+  assert.equal(buildLanguageSwitcherPath("/en/contact", "ru", "#contact"), "/ru/contact#contact");
 });

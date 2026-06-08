@@ -4,14 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { buildLocalizedPath, getSupportedLocales, type Locale } from "@/lib/i18n/config";
+import { languageSwitcherButtonRegistry } from "@/lib/buttons";
+import { buildLanguageSwitcherPath, getSupportedLocales, type Locale } from "@/lib/i18n/config";
 
 type LanguageSwitcherProps = {
   currentLocale: Locale;
   ariaLabel: string;
+  labels: Record<Locale, string>;
 };
 
-export function LanguageSwitcher({ currentLocale, ariaLabel }: LanguageSwitcherProps) {
+export function LanguageSwitcher({ currentLocale, ariaLabel, labels }: LanguageSwitcherProps) {
   const pathname = usePathname();
   const [hash, setHash] = useState("");
 
@@ -28,16 +30,21 @@ export function LanguageSwitcher({ currentLocale, ariaLabel }: LanguageSwitcherP
 
   return (
     <div className="language-switcher" role="group" aria-label={ariaLabel}>
-      {getSupportedLocales().map((locale) => (
-        <Link
-          key={locale}
-          href={buildLocalizedPath(pathname || `/${currentLocale}`, locale, hash)}
-          className={locale === currentLocale ? "is-active" : undefined}
-          aria-current={locale === currentLocale ? "page" : undefined}
-        >
-          {locale.toUpperCase()}
-        </Link>
-      ))}
+      {getSupportedLocales().map((locale) => {
+        const button = languageSwitcherButtonRegistry[locale];
+
+        return (
+          <Link
+            key={locale}
+            href={buildLanguageSwitcherPath(pathname || `/${currentLocale}`, locale, hash)}
+            className={locale === currentLocale ? "is-active" : undefined}
+            aria-current={locale === currentLocale ? "page" : undefined}
+            data-button-id={button.id}
+          >
+            {labels[locale]}
+          </Link>
+        );
+      })}
     </div>
   );
 }

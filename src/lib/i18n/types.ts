@@ -28,6 +28,7 @@ export type LocaleDictionary = {
   };
   languageSwitcher: {
     ariaLabel: string;
+    labels: Record<Locale, string>;
   };
   carousel: {
     ariaLabel: string;
