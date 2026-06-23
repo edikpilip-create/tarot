@@ -12,6 +12,9 @@ Create `.env.local` from `.env.example`, set `NEXT_PUBLIC_SITE_URL=http://localh
 
 ```powershell
 npm.cmd ci
+npm.cmd run test
+npm.cmd run lint
+npm.cmd run build
 npm.cmd run dev
 ```
 

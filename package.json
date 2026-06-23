@@ -12,6 +12,7 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
+    "test": "node --test src/**/*.test.ts",
     "lint": "eslint ."
   },
   "dependencies": {

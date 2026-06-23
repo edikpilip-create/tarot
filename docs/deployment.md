@@ -41,6 +41,15 @@ Create a production build:
 npm.cmd run build
 ```
 
+Run the same checks enforced by CI:
+
+```powershell
+npm.cmd ci
+npm.cmd run test
+npm.cmd run lint
+$env:NEXT_PUBLIC_SITE_URL="http://localhost:3000"; $env:DEPLOYMENT_ENV="preview"; npm.cmd run build
+```
+
 Start the built production server:
 
 ```powershell
@@ -48,6 +57,12 @@ npm.cmd start
 ```
 
 The build command requires a valid `NEXT_PUBLIC_SITE_URL`. A missing URL in a production-mode build throws a clear configuration error instead of generating canonical links for a fake domain.
+
+## CI Enforcement
+
+GitHub Actions runs `.github/workflows/ci.yml` on pull requests and pushes to `main`, `master`, and `codex/**` branches. The workflow uses Node.js `22.22.3`, installs npm `10.9.8`, checks both runtime versions, installs with `npm ci`, runs `npm run test`, runs `npm run lint`, and builds with `DEPLOYMENT_ENV=preview` plus `NEXT_PUBLIC_SITE_URL=http://localhost:3000`.
+
+The preview-mode build keeps CI non-indexable while still exercising the production Next.js build pipeline.
 
 ## Docker Deploy Flow
 
