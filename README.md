@@ -1,24 +1,38 @@
-# TARO «Путь Воина»
+# TARO "The Path of the Warrior"
 
-Лендинг авторской колоды ТАРО на Next.js App Router, TypeScript и Tailwind CSS.
+Multilingual landing page for an author tarot deck, built with Next.js App Router, React, TypeScript, and Tailwind CSS.
 
-## Запуск
+## Runtime
 
-```bash
-npm install
-npm run dev
+Use Node.js `22.22.3` and npm `10.9.8`. These versions are declared in `package.json` and used by every Docker stage.
+
+## Local Development
+
+Create `.env.local` from `.env.example`, set `NEXT_PUBLIC_SITE_URL=http://localhost:3000`, and add Telegram credentials when testing lead delivery.
+
+```powershell
+npm.cmd ci
+npm.cmd run dev
 ```
 
-## Telegram-заявки
+The localized pages are:
 
-API-роут `POST /api/telegram` отправляет заявку в Telegram. Для Dokploy/VPS задайте переменные окружения:
+- `/en`
+- `/uk`
+- `/ru`
 
-```bash
-TELEGRAM_BOT_TOKEN=...
-TELEGRAM_CHAT_ID=...
-NEXT_PUBLIC_SITE_URL=https://ваш-домен
-```
+The root route `/` detects `Accept-Language` and redirects to a supported locale, falling back to `/en`.
 
-## Медиа
+## Architecture
 
-Когда будут готовы реальные фото и видео, положите их в `public/media` и замените плейсхолдеры в `src/app/page.tsx`.
+- `src/app/[lang]/page.tsx` loads a locale dictionary and localized assets.
+- `src/components/home-page-client.tsx` contains the interactive landing page and lead form.
+- `src/data/locales/*.json` contains localized copy and metadata.
+- `src/app/api/telegram/route.ts` validates and sends lead submissions to Telegram.
+- `src/lib/seo.ts` owns canonical URLs, localized metadata, indexing policy, robots policy, and sitemap entries.
+- `src/lib/analytics.ts` defines the planned analytics event contract without loading a provider.
+- `public/media` contains visual assets.
+
+## Production
+
+Production setup, Docker commands, environment variables, rollback, smoke tests, indexing controls, SEO policy, analytics events, and the anti-spam plan are documented in `docs/deployment.md`.

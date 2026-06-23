@@ -9,14 +9,48 @@ const localeToOpenGraphLocale: Record<Locale, string> = {
   ru: "ru_RU",
 };
 
-export function getSiteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL || "https://artofseeing.example";
+type Environment = Readonly<Record<string, string | undefined>>;
+
+let hasWarnedAboutLocalSiteUrl = false;
+
+export function getSiteUrl(env: Environment = process.env): string {
+  const configuredUrl = env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (!configuredUrl) {
+    if (env.NODE_ENV === "production") {
+      throw new Error(
+        "NEXT_PUBLIC_SITE_URL is required for production builds and runtime.",
+      );
+    }
+
+    if (!hasWarnedAboutLocalSiteUrl) {
+      console.warn(
+        "NEXT_PUBLIC_SITE_URL is not set; using http://localhost:3000 for local development only.",
+      );
+      hasWarnedAboutLocalSiteUrl = true;
+    }
+
+    return "http://localhost:3000";
+  }
+
+  const siteUrl = new URL(configuredUrl);
+
+  if (siteUrl.protocol !== "http:" && siteUrl.protocol !== "https:") {
+    throw new Error("NEXT_PUBLIC_SITE_URL must use http:// or https://.");
+  }
+
+  return siteUrl.toString().replace(/\/$/, "");
+}
+
+export function isIndexingEnabled(env: Environment = process.env): boolean {
+  return env.DEPLOYMENT_ENV === "production";
 }
 
 export function buildLocaleMetadata(
   locale: Locale,
   dictionary: LocaleDictionary,
   siteUrl: string = getSiteUrl(),
+  indexingEnabled: boolean = isIndexingEnabled(),
 ): Metadata {
   const canonicalPath = `/${locale}`;
   const alternateLanguages = Object.fromEntries(
@@ -64,6 +98,32 @@ export function buildLocaleMetadata(
     icons: {
       icon: "/favicon.svg",
     },
+    robots: {
+      index: indexingEnabled,
+      follow: indexingEnabled,
+    },
+  };
+}
+
+export function buildRobotsPolicy(
+  env: Environment = process.env,
+  siteUrl: string = getSiteUrl(env),
+): MetadataRoute.Robots {
+  if (!isIndexingEnabled(env)) {
+    return {
+      rules: {
+        userAgent: "*",
+        disallow: "/",
+      },
+    };
+  }
+
+  return {
+    rules: {
+      userAgent: "*",
+      allow: "/",
+    },
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }
 
