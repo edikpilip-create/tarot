@@ -6,6 +6,10 @@ Multilingual landing page for an author tarot deck, built with Next.js App Route
 
 Use Node.js `22.22.3` and npm `10.9.8`. These versions are declared in `package.json` and used by every Docker stage.
 
+## Deployment Target
+
+Production is planned for a self-hosted VPS running Dokploy with Docker. The canonical production origin is `https://tarotwarriorpath.com`; `www.tarotwarriorpath.com` should redirect to the apex hostname.
+
 ## Local Development
 
 Create `.env.local` from `.env.example`, set `NEXT_PUBLIC_SITE_URL=http://localhost:3000`, and add Telegram credentials when testing lead delivery.
@@ -28,7 +32,7 @@ The root route `/` detects `Accept-Language` and redirects to a supported locale
 
 ## Architecture
 
-- `src/app/[lang]/page.tsx` loads a locale dictionary and localized assets.
+- `src/app/(localized)/[lang]/page.tsx` loads a locale dictionary and localized assets.
 - `src/components/home-page-client.tsx` contains the interactive landing page and lead form.
 - `src/data/locales/*.json` contains localized copy and metadata.
 - `src/app/api/telegram/route.ts` validates and sends lead submissions to Telegram.

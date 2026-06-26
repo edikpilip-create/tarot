@@ -2,24 +2,52 @@
 
 ## Runtime Contract
 
-Use Node.js `22.22.3` and npm `10.9.8` for local development, CI, and production. `package.json` declares both versions and the Docker image uses the same Node.js patch version.
+Use Node.js `22.22.3` and npm `10.9.8` for local development, CI, Docker, and production. `package.json` declares both versions and the Docker image uses the same Node.js patch version.
 
-The application uses Next.js App Router with standalone output. Localized pages live under `src/app/[lang]`, the root route redirects visitors to a locale, and `POST /api/telegram` handles lead delivery.
+The application uses Next.js App Router with standalone output. Localized pages live under `src/app/(localized)/[lang]`, the root route redirects visitors to a locale, and `POST /api/telegram` handles lead delivery.
+
+## Selected Hosting Model
+
+The selected production hosting model is self-hosted VPS + Dokploy + Docker.
+
+Production canonical origin:
+
+```text
+https://tarotwarriorpath.com
+```
+
+Canonical hostname:
+
+```text
+tarotwarriorpath.com
+```
+
+`www.tarotwarriorpath.com` must redirect to `tarotwarriorpath.com` at the proxy, Dokploy, or DNS provider layer. Do not use fake domains in production-facing configuration.
+
+Required VPS ports:
+
+- `80` for HTTP and ACME HTTP challenges.
+- `443` for HTTPS traffic.
+- `3000` for the Dokploy panel, unless the Dokploy installation is configured differently.
+
+Dokploy should be installed on the VPS, connected to the Git repository, and configured to deploy this app from the repository Dockerfile. Production secrets must be configured in the Dokploy UI, not stored in Git.
 
 ## Environment Contract
 
 Start from `.env.example`. Never commit `.env`, `.env.local`, or deployment secrets.
 
-| Variable | Required | Scope | Purpose |
+| Variable | Required | Scope | Production value |
 | --- | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Yes for builds and production | Build and runtime | Canonical origin such as `https://example.com`, without a path. Production builds fail when it is missing. |
-| `DEPLOYMENT_ENV` | Yes for deployment | Build and runtime | Set exactly to `production` only for the public production deployment. Other values are non-indexable. |
-| `TELEGRAM_BOT_TOKEN` | Yes for live lead delivery | Runtime secret | Telegram bot token used by `POST /api/telegram`. |
-| `TELEGRAM_CHAT_ID` | Yes for live lead delivery | Runtime secret | Destination Telegram chat identifier. |
-| `TURNSTILE_SITE_KEY` | Not yet | Future build/runtime value | Reserved for Cloudflare Turnstile client integration. |
-| `TURNSTILE_SECRET_KEY` | Not yet | Future runtime secret | Reserved for server-side Turnstile verification. |
+| `NEXT_PUBLIC_SITE_URL` | Yes for builds and production | Build and runtime | `https://tarotwarriorpath.com` |
+| `DEPLOYMENT_ENV` | Yes for deployment | Build and runtime | `production` |
+| `TELEGRAM_BOT_TOKEN` | Yes for live lead delivery | Runtime secret | Real bot token in Dokploy UI only |
+| `TELEGRAM_CHAT_ID` | Yes for live lead delivery | Runtime secret | Real chat ID in Dokploy UI only |
+| `TURNSTILE_SITE_KEY` | Not active yet | Future build/runtime value | Placeholder until Turnstile is implemented |
+| `TURNSTILE_SECRET_KEY` | Not active yet | Future runtime secret | Placeholder until Turnstile is implemented |
 
 For local work, use `NEXT_PUBLIC_SITE_URL=http://localhost:3000` and `DEPLOYMENT_ENV=development`.
+
+Production builds fail clearly when `NEXT_PUBLIC_SITE_URL` is missing. This prevents canonical URLs, Open Graph metadata, robots output, or sitemap entries from being generated for a fake production origin.
 
 ## Commands
 
@@ -56,8 +84,6 @@ Start the built production server:
 npm.cmd start
 ```
 
-The build command requires a valid `NEXT_PUBLIC_SITE_URL`. A missing URL in a production-mode build throws a clear configuration error instead of generating canonical links for a fake domain.
-
 ## CI Enforcement
 
 GitHub Actions runs `.github/workflows/ci.yml` on pull requests and pushes to `main`, `master`, and `codex/**` branches. The workflow uses Node.js `22.22.3`, installs npm `10.9.8`, checks both runtime versions, installs with `npm ci`, runs `npm run test`, runs `npm run lint`, and builds with `DEPLOYMENT_ENV=preview` plus `NEXT_PUBLIC_SITE_URL=http://localhost:3000`.
@@ -66,11 +92,24 @@ The preview-mode build keeps CI non-indexable while still exercising the product
 
 ## Docker Deploy Flow
 
-Build an immutable image. SEO metadata and robots output are generated during the build, so the URL and deployment environment must be provided as build arguments.
+The repository Dockerfile is the primary deployment path for Dokploy. It builds a standalone Next.js server and copies the required assets:
+
+- `.next/standalone`
+- `.next/static`
+- `public`
+
+The container defaults to:
+
+```text
+HOSTNAME=0.0.0.0
+PORT=3000
+```
+
+Build an immutable image. SEO metadata and robots output are generated during the build, so the canonical URL and deployment environment must be provided as build arguments.
 
 ```powershell
 docker build `
-  --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain.example `
+  --build-arg NEXT_PUBLIC_SITE_URL=https://tarotwarriorpath.com `
   --build-arg DEPLOYMENT_ENV=production `
   --tag artofseeing:<git-sha> .
 ```
@@ -81,14 +120,41 @@ Run the image with the same public values and runtime secrets:
 docker run --detach `
   --name artofseeing `
   --publish 3000:3000 `
-  --env NEXT_PUBLIC_SITE_URL=https://your-domain.example `
+  --env NEXT_PUBLIC_SITE_URL=https://tarotwarriorpath.com `
   --env DEPLOYMENT_ENV=production `
-  --env TELEGRAM_BOT_TOKEN=<secret> `
-  --env TELEGRAM_CHAT_ID=<secret> `
+  --env TELEGRAM_BOT_TOKEN=<dokploy-secret> `
+  --env TELEGRAM_CHAT_ID=<dokploy-secret> `
   artofseeing:<git-sha>
 ```
 
-For staging or preview, use its real preview URL and set `DEPLOYMENT_ENV=preview` or `staging` in both commands.
+For staging or preview, use the real preview origin and set `DEPLOYMENT_ENV=preview` or `staging` in both commands.
+
+## Dokploy VPS Deployment
+
+1. Install Dokploy on the VPS.
+2. Confirm ports `80`, `443`, and the Dokploy panel port `3000` are open.
+3. Create an app in Dokploy from the Git repository.
+4. Select Dockerfile-based deployment from the repository root.
+5. Configure build arguments:
+   - `NEXT_PUBLIC_SITE_URL=https://tarotwarriorpath.com`
+   - `DEPLOYMENT_ENV=production`
+6. Configure runtime environment variables in the Dokploy UI:
+   - `NEXT_PUBLIC_SITE_URL=https://tarotwarriorpath.com`
+   - `DEPLOYMENT_ENV=production`
+   - `TELEGRAM_BOT_TOKEN=<real secret>`
+   - `TELEGRAM_CHAT_ID=<real secret>`
+   - `TURNSTILE_SITE_KEY=<placeholder until implemented>`
+   - `TURNSTILE_SECRET_KEY=<placeholder until implemented>`
+7. Configure `tarotwarriorpath.com` as the production domain.
+8. Configure `www.tarotwarriorpath.com` to redirect to `tarotwarriorpath.com`.
+9. Enable HTTPS for the production domain.
+10. Deploy from the selected Git commit.
+
+Do not paste secrets into `Dockerfile`, `.env.example`, `README.md`, this document, or Git commit messages.
+
+## Docker Compose
+
+No `docker-compose.yml` is required for the current Dokploy path. Dokploy can build and run the app directly from the Dockerfile, and its proxy should manage public domain routing. Add Compose later only if Dokploy needs an explicit compose project for this app.
 
 ## Indexing Policy
 
@@ -128,18 +194,20 @@ If the domain or `NEXT_PUBLIC_SITE_URL` changed, use an image built for that exa
 - Submit valid contact data and confirm the UI reports success.
 - Confirm the lead arrives in the configured Telegram chat with source metadata.
 - Submit invalid data and confirm the API rejects it without sending to Telegram.
-- Confirm `/robots.txt` and `/sitemap.xml` follow the intended environment policy.
+- Confirm `/robots.txt` allows crawling in production.
+- Confirm `/sitemap.xml` contains `/en`, `/uk`, and `/ru` on `https://tarotwarriorpath.com`.
 - Review server logs for configuration errors and upstream Telegram failures.
 
 ## Custom Domain Checklist
 
-- Point DNS records to the deployment platform.
-- Enable TLS and verify the certificate covers the apex and intended `www` hostname.
-- Choose one canonical hostname and redirect the other hostname at the proxy or platform.
-- Set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin with no path or trailing slash.
+- Point the apex DNS record for `tarotwarriorpath.com` to the Dokploy VPS.
+- Point `www.tarotwarriorpath.com` to the same deployment target or redirect provider.
+- Enable TLS and verify the certificate covers the apex hostname.
+- Redirect `www.tarotwarriorpath.com` to `tarotwarriorpath.com`.
+- Set `NEXT_PUBLIC_SITE_URL=https://tarotwarriorpath.com` with no path or trailing slash.
 - Rebuild and redeploy after changing the canonical origin.
-- Verify locale canonical URLs and `hreflang` alternates use the final hostname.
-- Verify Telegram source URLs use the final hostname.
+- Verify locale canonical URLs and `hreflang` alternates use the apex hostname.
+- Verify Telegram source URLs use the apex hostname.
 
 ## SEO Verification Checklist
 
@@ -165,13 +233,7 @@ Open Graph image policy: `public/og.svg` is the current shared 1200 by 630 sourc
 
 Favicon policy: `public/favicon.svg` is the canonical favicon. Keep the symbol legible at small sizes and add raster or platform-specific variants only when a deployment target requires them.
 
-Brand naming by locale:
-
-- English: `TARO "The Path of the Warrior"`
-- Ukrainian: `TARO «Шлях Воїна»`
-- Russian: `TARO «Путь Воина»`
-
-Metadata changes must be made in all three locale dictionaries unless the difference is intentional.
+Brand naming by locale is maintained in the locale dictionaries. Metadata changes must be made in all three locale dictionaries unless the difference is intentional.
 
 ## Analytics Contract
 
