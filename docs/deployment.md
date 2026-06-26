@@ -237,20 +237,11 @@ Brand naming by locale is maintained in the locale dictionaries. Metadata change
 
 ## Analytics Contract
 
-`src/lib/analytics.ts` defines a provider-neutral `trackEvent` helper. It is currently a safe no-op: no analytics script is loaded and no network request is sent. Provider selection, consent handling, and event wiring can happen after design without changing event names.
+`src/lib/analytics.ts` defines a provider-neutral `trackEvent` helper. It is currently a safe no-op: no analytics script is loaded and no network request is sent.
 
-Planned conversion events:
+The conversion model is documented in `docs/conversion-model.md`. The primary macro conversion is `generate_lead`, which must be emitted only after confirmed Telegram delivery.
 
-| Event | Trigger | Suggested non-PII properties |
-| --- | --- | --- |
-| `hero_cta_click` | Visitor activates the hero call to action. | `locale`, `target_section` |
-| `spread_draw` | Visitor draws a new spread. | `locale`, `card_count` |
-| `contact_form_submit` | Valid client form submission begins. | `locale`, `source_screen`, `source_button` |
-| `telegram_lead_success` | Telegram API route confirms delivery. | `locale`, `source_form` |
-| `telegram_lead_error` | Validation, configuration, network, or Telegram delivery fails. | `locale`, `error_type`, `http_status` |
-| `language_changed` | Visitor chooses another locale. | `from_locale`, `to_locale`, `pathname` |
-
-Do not send names, contact details, messages, Telegram identifiers, IP addresses, Turnstile tokens, or other personal data to analytics.
+Provider selection, consent handling, GA4/GTM setup, and key-event marking belong to the later observability task. Do not send names, contact details, messages, Telegram identifiers, IP addresses, Turnstile tokens, or other personal data to analytics.
 
 ## Planned Anti-Spam Strategy
 
@@ -267,4 +258,4 @@ Implementation requirements for the later anti-spam task:
 - Keep development bypasses explicit and disabled in production.
 - Never log secrets, raw Turnstile tokens, contact fields, or unredacted IP addresses.
 - Add localized error states for challenge failure and rate limiting.
-- Track only the coarse `telegram_lead_error` category without personal data.
+- Track only the coarse `lead_submit_error` category without personal data.

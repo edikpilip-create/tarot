@@ -43,3 +43,5 @@ The root route `/` detects `Accept-Language` and redirects to a supported locale
 ## Production
 
 Production setup, Docker commands, environment variables, rollback, smoke tests, indexing controls, SEO policy, analytics events, and the anti-spam plan are documented in `docs/deployment.md`.
+
+The conversion model, macro conversion rule, privacy-safe analytics parameters, and design inputs for staging QA are documented in `docs/conversion-model.md`.

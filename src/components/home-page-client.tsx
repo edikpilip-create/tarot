@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { CSSProperties, FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 
+import { analyticsEventNames, trackEvent } from "@/lib/analytics";
 import { type LocalizedAssets } from "@/lib/assets";
 import { buttonRegistry, formRegistry } from "@/lib/buttons";
 import { type Locale } from "@/lib/i18n/config";
@@ -36,6 +37,7 @@ const starField = [
 ] as const;
 
 const spreadResultsScrollNudge = 56;
+const leadChannel = "telegram";
 
 type HomePageClientProps = {
   lang: Locale;
@@ -100,6 +102,30 @@ function SpreadResultCard({ card }: { card: SpreadCard }) {
   );
 }
 
+function getLeadSubmitErrorType(status?: number) {
+  if (!status) {
+    return "network_or_timeout";
+  }
+
+  if (status === 400) {
+    return "validation";
+  }
+
+  if (status === 429) {
+    return "rate_limited";
+  }
+
+  if (status === 500) {
+    return "missing_configuration";
+  }
+
+  if (status === 502) {
+    return "telegram_http_error";
+  }
+
+  return "unknown_server_error";
+}
+
 export default function HomePageClient({ lang, dictionary, assets }: HomePageClientProps) {
   const spreadDeck = createSpreadCards(
     dictionary.spread.cards.map((card) => {
@@ -117,10 +143,51 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
   const [formState, setFormState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const spreadResultsRef = useRef<HTMLDivElement | null>(null);
   const shouldScrollToSpreadRef = useRef(false);
+  const hasTrackedLeadFormStartRef = useRef(false);
+
+  useEffect(() => {
+    trackEvent(analyticsEventNames.pageView, {
+      locale: lang,
+      page_path: window.location.pathname
+    });
+  }, [lang]);
+
+  function getPagePath() {
+    return window.location.pathname;
+  }
+
+  function trackLeadFormStart() {
+    if (hasTrackedLeadFormStartRef.current) {
+      return;
+    }
+
+    hasTrackedLeadFormStartRef.current = true;
+
+    trackEvent(analyticsEventNames.leadFormStart, {
+      locale: lang,
+      page_path: getPagePath(),
+      form_id: formRegistry.lead.id,
+      lead_channel: leadChannel
+    });
+  }
 
   function drawCards() {
     shouldScrollToSpreadRef.current = true;
-    setSpread(drawSpreadCards(spreadDeck, 3));
+    const drawnSpread = drawSpreadCards(spreadDeck, 3);
+
+    trackEvent(analyticsEventNames.spreadStarted, {
+      locale: lang,
+      page_path: getPagePath(),
+      spread_cards_count: drawnSpread.length
+    });
+
+    setSpread(drawnSpread);
+
+    trackEvent(analyticsEventNames.spreadCompleted, {
+      locale: lang,
+      page_path: getPagePath(),
+      spread_cards_count: drawnSpread.length
+    });
   }
 
   useEffect(() => {
@@ -165,6 +232,13 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
       buttonId: formRegistry.lead.submitButtonId
     });
 
+    trackEvent(analyticsEventNames.leadSubmitAttempt, {
+      locale: lang,
+      page_path: getPagePath(),
+      form_id: formRegistry.lead.id,
+      lead_channel: leadChannel
+    });
+
     const response = await fetch("/api/telegram", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -176,11 +250,31 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
       })
     }).catch(() => null);
 
-    setFormState(response?.ok ? "sent" : "error");
+    const delivered = response?.ok === true;
 
-    if (response?.ok) {
+    setFormState(delivered ? "sent" : "error");
+
+    if (delivered) {
+      trackEvent(analyticsEventNames.generateLead, {
+        locale: lang,
+        page_path: getPagePath(),
+        form_id: formRegistry.lead.id,
+        lead_channel: leadChannel,
+        telegram_delivery_status: "success"
+      });
       event.currentTarget.reset();
+
+      return;
     }
+
+    trackEvent(analyticsEventNames.leadSubmitError, {
+      locale: lang,
+      page_path: getPagePath(),
+      form_id: formRegistry.lead.id,
+      lead_channel: leadChannel,
+      telegram_delivery_status: "failed",
+      error_type: getLeadSubmitErrorType(response?.status)
+    });
   }
 
   return (
@@ -252,7 +346,18 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
             {dictionary.hero.title}
           </h1>
           <p className="lead">{dictionary.hero.lead}</p>
-          <a className="primary-link" href={buttonRegistry.heroCta.href} data-button-id={buttonRegistry.heroCta.id}>
+          <a
+            className="primary-link"
+            href={buttonRegistry.heroCta.href}
+            data-button-id={buttonRegistry.heroCta.id}
+            onClick={() => {
+              trackEvent(analyticsEventNames.heroCtaClick, {
+                locale: lang,
+                page_path: getPagePath(),
+                cta_location: "hero"
+              });
+            }}
+          >
             {dictionary.buttons.heroCta}
           </a>
         </div>
@@ -419,7 +524,7 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
             <h2>{dictionary.contact.heading}</h2>
             <p>{dictionary.contact.description}</p>
           </div>
-          <form id={formRegistry.lead.id} className="lead-form" onSubmit={submitLead}>
+          <form id={formRegistry.lead.id} className="lead-form" onFocusCapture={trackLeadFormStart} onSubmit={submitLead}>
             <label>
               {dictionary.form.nameLabel}
               <input name="name" type="text" autoComplete="name" required />
