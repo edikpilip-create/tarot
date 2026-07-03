@@ -56,41 +56,24 @@ const suitVisuals: Array<{ id: StructureVisualId; className: string; iconSrc: st
 
 const minorElementVisuals: StructureVisualId[] = ["fire", "water", "air", "earth"];
 
+const elementIconSrc: Record<StructureVisualId, string> = {
+  air: "/media/icons/elements/air.svg",
+  earth: "/media/icons/elements/earth.svg",
+  fire: "/media/icons/elements/fire.svg",
+  water: "/media/icons/elements/water.svg"
+};
+
+const elementIconAlt: Record<StructureVisualId, string> = {
+  air: "Air element icon",
+  earth: "Earth element icon",
+  fire: "Fire element icon",
+  water: "Water element icon"
+};
+
 function StructureIcon({ id }: { id: StructureVisualId }) {
-  if (id === "fire") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 21c-4.1 0-7-2.9-7-6.9 0-3 1.8-5.4 4.6-7.7.4 2.3 1.4 3.6 3 4.3.7-2.4.3-4.9-1.4-7.7 4.9 2.4 7.8 6.6 7.8 10.9 0 4.1-2.9 7.1-7 7.1Z" />
-        <path d="M12 21c-1.8 0-3.2-1.3-3.2-3 0-1.5.9-2.7 2.5-3.9.3 1.2.9 2 1.8 2.4.3-1.1.1-2.3-.6-3.7 2.4 1.3 3.8 3.3 3.8 5.2 0 1.7-1.5 3-4.3 3Z" />
-      </svg>
-    );
-  }
-
-  if (id === "water") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 21c-3.5 0-6-2.5-6-5.9C6 10.7 12 3 12 3s6 7.7 6 12.1c0 3.4-2.5 5.9-6 5.9Z" />
-        <path d="M8.6 15.2c.7 1.5 1.8 2.3 3.4 2.3" />
-      </svg>
-    );
-  }
-
-  if (id === "earth") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 4 20 19H4L12 4Z" />
-        <path d="M7.8 15.2h8.4" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M4 9.2h10.8a3.2 3.2 0 1 0-3.2-3.2" />
-      <path d="M3 14h13.4a2.6 2.6 0 1 1-2.6 2.6" />
-      <path d="M6 18.8h6.2" />
-    </svg>
-  );
+  // Keep these SVGs as plain image assets so their internal colors, masks, and effects stay untouched.
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={elementIconSrc[id]} alt={elementIconAlt[id]} className="element-icon-image" />;
 }
 
 function CarouselFlipCard({

@@ -13,6 +13,15 @@
   --line: rgba(242, 217, 155, 0.2);
   --shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
   --cosmic-parallax-y: 0px;
+  --cosmic-overlay-top: rgba(0, 0, 0, 0.72);
+  --cosmic-overlay-middle: rgba(0, 0, 0, 0.38);
+  --cosmic-overlay-bottom: rgba(0, 0, 0, 0.86);
+  --cosmic-side-shadow: rgba(7, 7, 6, 0.52);
+  --cosmic-side-soft: rgba(7, 7, 6, 0.16);
+  --cosmic-warm-glow: rgba(255, 181, 87, 0.12);
+  --cosmic-cold-glow: rgba(65, 163, 255, 0.1);
+  --cosmic-copper-glow: rgba(156, 86, 51, 0.14);
+  --cosmic-line-texture: rgba(247, 236, 213, 0.026);
 }
 
 * {
@@ -68,10 +77,13 @@ main {
 
 .cosmic-background-overlay {
   background:
-    radial-gradient(circle at 50% 24%, rgba(255, 181, 87, 0.12), transparent 30%),
-    radial-gradient(circle at 80% 12%, rgba(65, 163, 255, 0.1), transparent 26%),
-    radial-gradient(circle at 18% 72%, rgba(156, 86, 51, 0.14), transparent 32%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.42) 36%, rgba(0, 0, 0, 0.86));
+    radial-gradient(circle at 70% 42%, rgba(215, 180, 106, 0.18), transparent 22rem),
+    radial-gradient(circle at 50% 24%, var(--cosmic-warm-glow), transparent 30%),
+    radial-gradient(circle at 80% 12%, var(--cosmic-cold-glow), transparent 26%),
+    radial-gradient(circle at 18% 72%, var(--cosmic-copper-glow), transparent 32%),
+    linear-gradient(90deg, var(--cosmic-side-shadow), var(--cosmic-side-soft)),
+    repeating-linear-gradient(115deg, var(--cosmic-line-texture) 0 1px, transparent 1px 16px),
+    linear-gradient(180deg, var(--cosmic-overlay-top), var(--cosmic-overlay-middle) 36%, var(--cosmic-overlay-bottom));
 }
 
 .cosmic-background-stars,
@@ -290,6 +302,8 @@ textarea {
   padding: clamp(84px, 10vw, 150px) clamp(18px, 5vw, 72px);
 }
 
+/* Page-wide atmosphere lives in .cosmic-background; sections should stay transparent unless a content surface needs contrast. */
+
 .hero {
   min-height: 96vh;
   display: flex;
@@ -302,10 +316,7 @@ textarea {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(7, 7, 6, 0.78), rgba(7, 7, 6, 0.28)),
-    radial-gradient(circle at 70% 42%, rgba(215, 180, 106, 0.24), transparent 22rem),
-    repeating-linear-gradient(115deg, rgba(247, 236, 213, 0.028) 0 1px, transparent 1px 16px);
+  background: transparent;
   pointer-events: none;
 }
 
@@ -667,7 +678,7 @@ p {
   align-items: center;
   padding-inline: 0;
   padding-block: clamp(76px, 8vw, 120px);
-  background: linear-gradient(180deg, rgba(7, 7, 6, 0.8) 0%, rgba(9, 8, 6, 0.7) 52%, rgba(7, 7, 6, 0.82) 100%);
+  background: transparent;
 }
 
 .carousel-section .section-heading {
@@ -834,30 +845,15 @@ p {
 .ancient-texture-group {
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(7, 7, 6, 0.9), rgba(7, 7, 6, 0.58) 48%, rgba(7, 7, 6, 0.88)),
-    linear-gradient(180deg, rgba(7, 7, 6, 0.86), rgba(7, 7, 6, 0.44) 36%, rgba(7, 7, 6, 0.64) 72%, rgba(7, 7, 6, 0.94)),
-    url("/media/maya-toltec-texture.jpg") center / cover no-repeat fixed,
-    #080806;
+  background: transparent;
 }
 
 .ancient-texture-group::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 24% 18%, rgba(242, 217, 155, 0.12), transparent 20rem),
-    radial-gradient(circle at 72% 42%, rgba(156, 86, 51, 0.16), transparent 28rem),
-    radial-gradient(circle at 40% 82%, rgba(215, 180, 106, 0.1), transparent 22rem);
-  pointer-events: none;
+  content: none;
 }
 
 .ancient-texture-group::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(100deg, rgba(247, 236, 213, 0.024) 0 1px, transparent 1px 18px);
-  pointer-events: none;
+  content: none;
 }
 
 .ancient-texture-group .section {
@@ -1332,7 +1328,7 @@ cite {
   --element-accent: var(--gold);
   --element-glow: rgba(215, 180, 106, 0.14);
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-columns: 48px minmax(0, 1fr);
   align-items: center;
   gap: 12px;
   min-height: 62px;
@@ -1368,23 +1364,12 @@ cite {
   --element-glow: rgba(32, 185, 124, 0.16);
 }
 
-.element-chip svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
-}
-
-.element-chip svg {
-  width: 40px;
-  height: 40px;
-  padding: 9px;
-  border-radius: 999px;
-  color: var(--element-accent);
-  background: var(--element-glow);
+.element-icon-image {
+  display: block;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .element-chip strong,
@@ -1784,8 +1769,11 @@ cite {
 
   .cosmic-background-overlay {
     background:
+      radial-gradient(circle at 70% 30%, rgba(215, 180, 106, 0.14), transparent 18rem),
       radial-gradient(circle at 50% 18%, rgba(255, 181, 87, 0.1), transparent 28%),
       radial-gradient(circle at 74% 8%, rgba(65, 163, 255, 0.08), transparent 24%),
+      linear-gradient(90deg, rgba(7, 7, 6, 0.42), rgba(7, 7, 6, 0.12)),
+      repeating-linear-gradient(115deg, var(--cosmic-line-texture) 0 1px, transparent 1px 16px),
       linear-gradient(180deg, rgba(0, 0, 0, 0.76), rgba(0, 0, 0, 0.5) 34%, rgba(0, 0, 0, 0.88));
   }
 
@@ -1884,7 +1872,13 @@ cite {
   }
 
   .element-chip {
+    grid-template-columns: 40px minmax(0, 1fr);
     min-height: 58px;
+  }
+
+  .element-icon-image {
+    width: 40px;
+    height: 40px;
   }
 
   .structure-suit-card {
@@ -1910,11 +1904,6 @@ cite {
     margin-top: 18px;
     margin-bottom: -12px;
     opacity: 0.88;
-  }
-
-  .ancient-texture-group {
-    background-attachment: scroll;
-    background-position: center;
   }
 
   .carousel-section {
