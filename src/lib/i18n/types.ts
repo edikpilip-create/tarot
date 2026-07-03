@@ -98,6 +98,10 @@ export type LocaleDictionary = {
       label: string;
       text: string;
     }>;
+    minorElements: Array<{
+      element: string;
+      meaning: string;
+    }>;
   };
   suits: Array<{
     name: string;

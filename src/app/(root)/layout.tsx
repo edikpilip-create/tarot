@@ -1,5 +1,6 @@
 import type { Viewport } from "next";
 
+import { CosmicBackground } from "@/components/cosmic-background";
 import { defaultLocale } from "@/lib/i18n/config";
 
 import "../globals.css";
@@ -17,7 +18,10 @@ export default function RootRedirectLayout({
 }>) {
   return (
     <html lang={defaultLocale}>
-      <body>{children}</body>
+      <body>
+        <CosmicBackground />
+        {children}
+      </body>
     </html>
   );
 }

@@ -98,6 +98,12 @@
     "stats": [
       { "value": "22", "label": "Major Arcana", "text": "Stages and concepts of the Warrior’s path." },
       { "value": "56", "label": "Minor Arcana", "text": "The practice of power through four suits." }
+    ],
+    "minorElements": [
+      { "element": "Fire", "meaning": "Action" },
+      { "element": "Water", "meaning": "Emotion" },
+      { "element": "Air", "meaning": "Mind" },
+      { "element": "Earth", "meaning": "Form" }
     ]
   },
   "suits": [

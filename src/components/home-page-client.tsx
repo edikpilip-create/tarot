@@ -45,6 +45,54 @@ type HomePageClientProps = {
   assets: LocalizedAssets;
 };
 
+type StructureVisualId = "air" | "fire" | "earth" | "water";
+
+const suitVisuals: Array<{ id: StructureVisualId; className: string; iconSrc: string }> = [
+  { id: "air", className: "suit-card-air", iconSrc: "/media/icons/suits/swords.svg" },
+  { id: "fire", className: "suit-card-fire", iconSrc: "/media/icons/suits/wands.svg" },
+  { id: "earth", className: "suit-card-earth", iconSrc: "/media/icons/suits/pentacles.svg" },
+  { id: "water", className: "suit-card-water", iconSrc: "/media/icons/suits/cups.svg" }
+];
+
+const minorElementVisuals: StructureVisualId[] = ["fire", "water", "air", "earth"];
+
+function StructureIcon({ id }: { id: StructureVisualId }) {
+  if (id === "fire") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 21c-4.1 0-7-2.9-7-6.9 0-3 1.8-5.4 4.6-7.7.4 2.3 1.4 3.6 3 4.3.7-2.4.3-4.9-1.4-7.7 4.9 2.4 7.8 6.6 7.8 10.9 0 4.1-2.9 7.1-7 7.1Z" />
+        <path d="M12 21c-1.8 0-3.2-1.3-3.2-3 0-1.5.9-2.7 2.5-3.9.3 1.2.9 2 1.8 2.4.3-1.1.1-2.3-.6-3.7 2.4 1.3 3.8 3.3 3.8 5.2 0 1.7-1.5 3-4.3 3Z" />
+      </svg>
+    );
+  }
+
+  if (id === "water") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 21c-3.5 0-6-2.5-6-5.9C6 10.7 12 3 12 3s6 7.7 6 12.1c0 3.4-2.5 5.9-6 5.9Z" />
+        <path d="M8.6 15.2c.7 1.5 1.8 2.3 3.4 2.3" />
+      </svg>
+    );
+  }
+
+  if (id === "earth") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 4 20 19H4L12 4Z" />
+        <path d="M7.8 15.2h8.4" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M4 9.2h10.8a3.2 3.2 0 1 0-3.2-3.2" />
+      <path d="M3 14h13.4a2.6 2.6 0 1 1-2.6 2.6" />
+      <path d="M6 18.8h6.2" />
+    </svg>
+  );
+}
+
 function CarouselFlipCard({
   frontSrc,
   backSrc,
@@ -457,29 +505,72 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
       </div>
 
       <section id="structure" className="section structure-section">
-        <div className="section-heading">
+        <div className="structure-background-mark" aria-hidden="true" />
+        <div className="section-heading structure-heading">
+          <div className="structure-ornament" aria-hidden="true">
+            <span />
+            <i />
+            <span />
+          </div>
           <p className="eyebrow">{dictionary.structure.eyebrow}</p>
           <h2>{dictionary.structure.heading}</h2>
           <p>{dictionary.structure.description}</p>
         </div>
-        <div className="structure-grid">
-          {dictionary.structure.stats.map((stat) => (
-            <div key={stat.label} className="stat">
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-              <p>{stat.text}</p>
-            </div>
-          ))}
+        <div className="structure-grid structure-arcana-grid">
+          {dictionary.structure.stats.map((stat, index) => {
+            const isMinorArcana = index === 1;
+
+            return (
+              <article
+                key={stat.label}
+                className={`stat structure-stat ${isMinorArcana ? "structure-stat-minor" : "structure-stat-major"}`}
+              >
+                <div className="structure-card-mark" aria-hidden="true" />
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
+                <i className="structure-divider" aria-hidden="true" />
+                <p>{stat.text}</p>
+
+                {isMinorArcana ? (
+                  <div className="element-chip-grid" aria-label={dictionary.structure.elementLabel}>
+                    {dictionary.structure.minorElements.map((element, elementIndex) => {
+                      const visualId = minorElementVisuals[elementIndex] ?? "fire";
+
+                      return (
+                        <span key={element.element} className={`element-chip element-chip-${visualId}`}>
+                          <StructureIcon id={visualId} />
+                          <span>
+                            <strong>{element.element}</strong>
+                            <small>{element.meaning}</small>
+                          </span>
+                        </span>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </article>
+            );
+          })}
         </div>
-        <div className="suits-grid">
-          {dictionary.suits.map((suit) => (
-            <article key={suit.name} className="suit-card">
-              <h3>{suit.name}</h3>
-              <p className="muted">{dictionary.structure.elementLabel}: {suit.element}</p>
-              <p className="muted">{dictionary.structure.totemsLabel}: {suit.totems}</p>
-              <p>{suit.text}</p>
-            </article>
-          ))}
+        <div className="suits-grid structure-suits-grid">
+          {dictionary.suits.map((suit, index) => {
+            const visual = suitVisuals[index] ?? suitVisuals[0];
+
+            return (
+              <article key={suit.name} className={`suit-card structure-suit-card ${visual.className}`}>
+                <div className="suit-card-top">
+                  <span className="suit-icon-badge" aria-hidden="true">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- Original SVGs must render as plain image files without recoloring. */}
+                    <img className="suit-icon-image" src={visual.iconSrc} alt="" />
+                  </span>
+                  <span className="suit-element-name">{suit.element}</span>
+                </div>
+                <h3>{suit.name}</h3>
+                <p className="muted">{dictionary.structure.totemsLabel}: {suit.totems}</p>
+                <p>{suit.text}</p>
+              </article>
+            );
+          })}
         </div>
       </section>
 

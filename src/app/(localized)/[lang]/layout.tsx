@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 
+import { CosmicBackground } from "@/components/cosmic-background";
 import { getSupportedLocales, isLocale } from "@/lib/i18n/config";
 import { loadDictionary } from "@/lib/i18n/load-dictionary";
 import { buildLocaleMetadata } from "@/lib/seo";
@@ -50,7 +51,10 @@ export default async function LocalizedRootLayout({
 
   return (
     <html lang={lang}>
-      <body>{children}</body>
+      <body>
+        <CosmicBackground />
+        {children}
+      </body>
     </html>
   );
 }
