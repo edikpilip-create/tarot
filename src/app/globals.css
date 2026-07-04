@@ -723,12 +723,36 @@ p {
 }
 
 .split-section {
+  /* FIRE TUNING:
+     Горизонтальная позиция основания костра.
+     Меньше = левее, больше = правее.
+  */
+  --campfire-x: 74.5%;
+  /* FIRE TUNING:
+     Вертикальная позиция основания костра.
+     Меньше = выше, больше = ниже.
+  */
+  --campfire-y: 78%;
+  /* FIRE TUNING:
+     Визуальный размер anchor-области костра.
+     Увеличивай width/height вместе, если нужен более крупный костёр.
+  */
+  --campfire-width: clamp(210px, 25vw, 410px);
+  --campfire-height: clamp(270px, 34vw, 520px);
+  /* FIRE COLOR:
+     Ручки атмосферы фона: свечение костра, закат, боковая тень и нижняя виньетка.
+  */
+  --wisdom-bg-fire-glow: 0.24;
+  --wisdom-bg-sunset-glow: 0.16;
+  --wisdom-bg-side-shadow: 0.86;
+  --wisdom-bg-bottom-vignette: 0.56;
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 74% 64%, rgba(255, 150, 28, 0.2), rgba(255, 150, 28, 0.06) 18%, transparent 38%),
-    linear-gradient(90deg, rgba(7, 7, 6, 0.92) 0%, rgba(7, 7, 6, 0.72) 36%, rgba(7, 7, 6, 0.18) 64%, rgba(7, 7, 6, 0.46) 100%),
-    linear-gradient(180deg, rgba(7, 7, 6, 0.36), rgba(7, 7, 6, 0.08) 46%, rgba(7, 7, 6, 0.5)),
-    url("/media/toltec-fire-background.jpg") center / cover no-repeat,
+    radial-gradient(ellipse at var(--campfire-x) var(--campfire-y), rgba(255, 158, 32, var(--wisdom-bg-fire-glow)), rgba(255, 86, 18, 0.09) 20%, transparent 42%),
+    radial-gradient(ellipse at 53% 32%, rgba(224, 66, 36, var(--wisdom-bg-sunset-glow)), rgba(121, 42, 74, 0.08) 30%, transparent 56%),
+    linear-gradient(90deg, rgba(7, 7, 6, var(--wisdom-bg-side-shadow)) 0%, rgba(7, 7, 6, 0.64) 35%, rgba(7, 7, 6, 0.1) 64%, rgba(7, 7, 6, 0.36) 100%),
+    linear-gradient(180deg, rgba(9, 8, 14, 0.25), rgba(7, 7, 6, 0.04) 46%, rgba(7, 7, 6, var(--wisdom-bg-bottom-vignette))),
+    url("/media/toltec-fire-background-no-fire.png") center / cover no-repeat,
     #080806;
 }
 
@@ -736,14 +760,17 @@ p {
   content: "";
   position: absolute;
   inset: 0;
+  /* FIRE LAYER: верхний атмосферный overlay вокруг костра и неба. */
   background:
-    radial-gradient(ellipse at 72% 70%, rgba(255, 142, 24, 0.36), rgba(255, 142, 24, 0.12) 24%, transparent 48%),
-    radial-gradient(ellipse at 28% 64%, rgba(255, 184, 72, 0.08), transparent 34%);
+    radial-gradient(ellipse at var(--campfire-x) var(--campfire-y), rgba(255, 156, 35, 0.28), rgba(255, 96, 24, 0.11) 24%, transparent 48%),
+    radial-gradient(ellipse at 48% 29%, rgba(255, 94, 46, 0.12), transparent 38%),
+    radial-gradient(ellipse at 28% 64%, rgba(255, 184, 72, 0.1), transparent 34%);
   opacity: 1;
 }
 
 .split-section::after {
   content: "";
+  /* FIRE LAYER: z-index 0 держит нижнее свечение под glow/canvas и контентом. */
   position: absolute;
   z-index: 0;
   left: 0;
@@ -751,11 +778,11 @@ p {
   bottom: -18%;
   height: 58%;
   background:
-    radial-gradient(ellipse at 70% 78%, rgba(255, 132, 24, 0.34), rgba(255, 132, 24, 0.12) 26%, transparent 56%),
-    radial-gradient(ellipse at 32% 58%, rgba(255, 186, 62, 0.1), transparent 40%);
+    radial-gradient(ellipse at 70% 78%, rgba(255, 142, 28, 0.42), rgba(255, 84, 20, 0.17) 28%, transparent 58%),
+    radial-gradient(ellipse at 32% 58%, rgba(255, 186, 62, 0.13), transparent 42%);
   mix-blend-mode: screen;
-  filter: blur(18px);
-  opacity: 0.68;
+  filter: blur(20px);
+  opacity: 0.74;
   pointer-events: none;
 }
 
@@ -846,6 +873,40 @@ p {
   position: relative;
   overflow: hidden;
   background: transparent;
+}
+
+.campfire-glow,
+.campfire-anchor {
+  /* FIRE TUNING: общая точка привязки glow и canvas-костра к координатам --campfire-x/y. */
+  position: absolute;
+  left: var(--campfire-x);
+  top: var(--campfire-y);
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.campfire-glow {
+  /* FIRE LAYER: glow под canvas-костром, но поверх фоновых overlay. */
+  z-index: 1;
+  /* FIRE TUNING: размер мягкого свечения вокруг основания костра. */
+  width: calc(var(--campfire-width) * 1.38);
+  height: calc(var(--campfire-height) * 0.7);
+  transform: translate(-50%, -54%);
+  background:
+    radial-gradient(ellipse at 50% 78%, rgba(255, 190, 86, 0.24), rgba(255, 104, 24, 0.18) 20%, rgba(255, 104, 24, 0.06) 48%, transparent 72%),
+    radial-gradient(ellipse at 50% 96%, rgba(255, 89, 18, 0.22), transparent 58%);
+  mix-blend-mode: screen;
+  /* FIRE COLOR: blur/opacity управляют мягкостью и силой glow. */
+  filter: blur(14px);
+  opacity: 0.9;
+}
+
+.campfire-anchor {
+  /* FIRE LAYER: canvas-костёр поверх glow. */
+  z-index: 2;
+  /* FIRE TUNING: anchor задаёт базовый визуальный размер, а canvas внутри него увеличен отдельно. */
+  width: var(--campfire-width);
+  height: var(--campfire-height);
 }
 
 .ancient-texture-group::before {
@@ -1675,6 +1736,15 @@ cite {
   .cosmic-background-particles {
     transform: none !important;
   }
+
+  /* FIRE RESPONSIVE: reduced motion отключает canvas-костёр, оставляя статичный фон. */
+  .campfire-anchor {
+    display: none;
+  }
+
+  .campfire-glow {
+    opacity: 0.25;
+  }
 }
 
 @media (max-width: 980px) {
@@ -1710,6 +1780,11 @@ cite {
   }
 
   .split-section {
+    /* FIRE RESPONSIVE: tablet-позиция и размер костра. */
+    --campfire-x: 73%;
+    --campfire-y: 82%;
+    --campfire-width: clamp(190px, 30vw, 300px);
+    --campfire-height: clamp(250px, 41vw, 390px);
     min-height: auto;
   }
 
@@ -1784,6 +1859,18 @@ cite {
 
   .cosmic-particle:nth-child(n + 4),
   .cosmic-star:nth-child(n + 9) {
+    display: none;
+  }
+
+  .split-section {
+    /* FIRE RESPONSIVE: mobile оставляет только фоновое изображение без canvas-костра. */
+    --campfire-x: 74%;
+    --campfire-y: 80%;
+  }
+
+  /* FIRE RESPONSIVE: на mobile canvas-костёр и glow полностью скрыты. */
+  .campfire-anchor,
+  .campfire-glow {
     display: none;
   }
 }

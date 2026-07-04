@@ -13,6 +13,7 @@ import { createSpreadCards, drawSpreadCards, type SpreadCard, type SpreadCardId 
 import { getRequestSource } from "@/lib/telegram-source";
 import { getInitialSpreadState, getSpreadResultsScrollTop } from "@/lib/spread-view";
 
+import { AnimatedCampfire } from "./AnimatedCampfire";
 import { LanguageSwitcher } from "./language-switcher";
 
 const starField = [
@@ -413,6 +414,11 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
       </section>
 
       <section id="wisdom" className="section split-section">
+        {/* FIRE LAYER: glow и canvas-костёр вставлены первыми, чтобы работать как фоновые декоративные слои. */}
+        <div className="campfire-glow" aria-hidden="true" />
+        <div className="campfire-anchor" aria-hidden="true">
+          <AnimatedCampfire />
+        </div>
         <div className="rich-copy wisdom-copy">
           <h2>{dictionary.wisdom.heading}</h2>
           {dictionary.wisdom.body.map((paragraph) => (
