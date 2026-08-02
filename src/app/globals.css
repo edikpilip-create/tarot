@@ -723,12 +723,15 @@ p {
 }
 
 .split-section {
+  --campfire-x: 72%;
+  --campfire-y: 84%;
+  --campfire-size: clamp(92px, 11vw, 180px);
   min-height: 100vh;
   background:
     radial-gradient(ellipse at 74% 64%, rgba(255, 150, 28, 0.2), rgba(255, 150, 28, 0.06) 18%, transparent 38%),
     linear-gradient(90deg, rgba(7, 7, 6, 0.92) 0%, rgba(7, 7, 6, 0.72) 36%, rgba(7, 7, 6, 0.18) 64%, rgba(7, 7, 6, 0.46) 100%),
     linear-gradient(180deg, rgba(7, 7, 6, 0.36), rgba(7, 7, 6, 0.08) 46%, rgba(7, 7, 6, 0.5)),
-    url("/media/toltec-fire-background.jpg") center / cover no-repeat,
+    url("/media/section-background-without-fire.png") center / cover no-repeat,
     #080806;
 }
 
@@ -756,6 +759,16 @@ p {
   mix-blend-mode: screen;
   filter: blur(18px);
   opacity: 0.68;
+  pointer-events: none;
+}
+
+.campfire-position {
+  position: absolute;
+  z-index: 2;
+  left: var(--campfire-x);
+  top: var(--campfire-y);
+  width: var(--campfire-size);
+  transform: translate(-50%, -100%);
   pointer-events: none;
 }
 
@@ -840,6 +853,7 @@ p {
   min-height: 720px;
   display: flex;
   align-items: center;
+  background-image: url("/media/carousel-card-1-front.webp");
 }
 
 .ancient-texture-group {
@@ -1710,6 +1724,9 @@ cite {
   }
 
   .split-section {
+    --campfire-x: 72%;
+    --campfire-y: 78%;
+    --campfire-size: clamp(78px, 16vw, 145px);
     min-height: auto;
   }
 
@@ -1809,6 +1826,12 @@ cite {
 
   .hero {
     padding-top: 148px;
+  }
+
+  .split-section {
+    --campfire-x: 70%;
+    --campfire-y: 74%;
+    --campfire-size: clamp(62px, 24vw, 112px);
   }
 
   h1 {

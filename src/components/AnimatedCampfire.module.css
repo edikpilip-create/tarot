@@ -1,0 +1,334 @@
+.campfire {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.12;
+  overflow: visible;
+  pointer-events: none;
+  transform: translateZ(0);
+  isolation: isolate;
+}
+
+.campfire::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  z-index: 0;
+  width: 112%;
+  height: 26%;
+  border-radius: 999px;
+  background: radial-gradient(ellipse, rgba(255, 153, 42, 0.28), rgba(155, 55, 16, 0.11) 42%, transparent 72%);
+  filter: blur(7px);
+  opacity: 0.78;
+  transform: translateX(-50%);
+  animation: baseGlowPulse 4.6s ease-in-out infinite;
+}
+
+.groundGlow,
+.aura,
+.heatWave,
+.sparkLayer,
+.fireSvg {
+  position: absolute;
+  inset: 0;
+}
+
+.groundGlow {
+  z-index: 0;
+  inset: auto -62% -18%;
+  height: 58%;
+  border-radius: 999px;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(255, 185, 73, 0.34), rgba(255, 107, 23, 0.16) 34%, transparent 70%),
+    radial-gradient(ellipse at 48% 66%, rgba(174, 44, 12, 0.18), transparent 68%);
+  filter: blur(13px);
+  mix-blend-mode: screen;
+  opacity: 0.72;
+  animation: glowPulse 5.8s ease-in-out infinite;
+}
+
+.aura {
+  z-index: 0;
+  inset: -24% -30% 16%;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 50% 72%, rgba(255, 185, 72, 0.44), rgba(255, 101, 21, 0.22) 28%, rgba(179, 37, 14, 0.1) 48%, transparent 72%),
+    radial-gradient(ellipse at 44% 58%, rgba(255, 239, 167, 0.12), transparent 34%);
+  filter: blur(12px);
+  mix-blend-mode: screen;
+  opacity: 0.74;
+  animation: glowPulse 4.2s ease-in-out infinite;
+}
+
+.heatWave {
+  z-index: 2;
+  left: 27%;
+  right: 22%;
+  top: 6%;
+  bottom: 30%;
+  border-radius: 48% 52% 42% 48%;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 224, 159, 0.12), transparent),
+    repeating-linear-gradient(92deg, transparent 0 8px, rgba(255, 174, 84, 0.08) 9px 10px, transparent 11px 20px);
+  filter: blur(5px);
+  mix-blend-mode: screen;
+  opacity: 0.18;
+  transform-origin: 50% 100%;
+  animation: heatWave 6.4s ease-in-out infinite;
+}
+
+.sparkLayer {
+  z-index: 3;
+  overflow: visible;
+}
+
+.spark {
+  position: absolute;
+  left: var(--spark-x);
+  bottom: 22%;
+  width: var(--spark-size);
+  height: var(--spark-size);
+  border-radius: 999px;
+  background: #ffd56d;
+  box-shadow:
+    0 0 8px rgba(255, 205, 74, 0.86),
+    0 0 18px rgba(255, 89, 18, 0.38);
+  opacity: 0;
+  transform: translate3d(-50%, 0, 0) scale(0.4);
+  animation: sparkRise var(--spark-duration) ease-out infinite;
+  animation-delay: var(--spark-delay);
+  will-change: transform, opacity;
+}
+
+.fireSvg {
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter:
+    drop-shadow(0 0 10px rgba(255, 133, 29, 0.45))
+    drop-shadow(0 0 28px rgba(255, 88, 18, 0.24));
+}
+
+.flameGroup {
+  transform-origin: 80px 147px;
+}
+
+.flame,
+.innerFlame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+
+.outerFlame {
+  opacity: 0.82;
+  mix-blend-mode: screen;
+  animation: flameFlicker 2.8s ease-in-out infinite;
+}
+
+.middleFlame {
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  animation: flameFlicker 2.2s ease-in-out infinite;
+}
+
+.innerFlame {
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  animation: innerFlameFlicker 1.8s ease-in-out infinite;
+}
+
+.flameOne {
+  animation-duration: 2.9s;
+  animation-delay: -0.35s;
+}
+
+.flameTwo {
+  animation-duration: 2.35s;
+  animation-delay: -1.2s;
+}
+
+.flameThree {
+  animation-duration: 3.15s;
+  animation-delay: -0.8s;
+}
+
+.flameFour {
+  animation-duration: 2.05s;
+  animation-delay: -1.55s;
+}
+
+.flameFive {
+  animation-duration: 2.55s;
+  animation-delay: -0.6s;
+}
+
+.innerOne {
+  animation-duration: 1.9s;
+  animation-delay: -0.25s;
+}
+
+.innerTwo {
+  animation-duration: 1.65s;
+  animation-delay: -0.9s;
+}
+
+.emberBed {
+  opacity: 0.72;
+  transform-origin: center;
+  animation: emberPulse 3.6s ease-in-out infinite;
+}
+
+.coals {
+  fill: #190c08;
+  opacity: 0.86;
+}
+
+.logs {
+  opacity: 0.96;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.42));
+}
+
+.logHighlight {
+  fill: none;
+  stroke: rgba(255, 187, 95, 0.34);
+  stroke-linecap: round;
+  stroke-width: 2;
+  mix-blend-mode: screen;
+}
+
+@keyframes flameFlicker {
+  0%,
+  100% {
+    opacity: 0.78;
+    transform: translate3d(0, 0, 0) scaleX(1) scaleY(1) skewX(0deg);
+  }
+
+  28% {
+    opacity: 0.93;
+    transform: translate3d(-2px, 1px, 0) scaleX(1.06) scaleY(0.97) skewX(-4deg);
+  }
+
+  52% {
+    opacity: 0.84;
+    transform: translate3d(2px, -2px, 0) scaleX(0.94) scaleY(1.06) skewX(5deg);
+  }
+
+  76% {
+    opacity: 0.96;
+    transform: translate3d(-1px, -1px, 0) scaleX(1.03) scaleY(1.02) skewX(-2deg);
+  }
+}
+
+@keyframes innerFlameFlicker {
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  35% {
+    opacity: 1;
+    transform: translate3d(1px, -2px, 0) scaleX(0.92) scaleY(1.08) skewX(3deg);
+  }
+
+  66% {
+    opacity: 0.88;
+    transform: translate3d(-1px, 1px, 0) scaleX(1.05) scaleY(0.96) skewX(-3deg);
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes baseGlowPulse {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: translateX(-50%) scale(0.96);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+
+@keyframes sparkRise {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, 0, 0) scale(0.4);
+  }
+
+  12% {
+    opacity: 0.86;
+  }
+
+  70% {
+    opacity: 0.46;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(-50% + var(--spark-dx)), -118px, 0) scale(0.08);
+  }
+}
+
+@keyframes emberPulse {
+  0%,
+  100% {
+    opacity: 0.58;
+    transform: scaleX(0.98);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scaleX(1.04);
+  }
+}
+
+@keyframes heatWave {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: translate3d(-2px, 0, 0) scaleX(0.96) skewX(-3deg);
+  }
+
+  50% {
+    opacity: 0.24;
+    transform: translate3d(3px, -5px, 0) scaleX(1.05) skewX(4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campfire::after,
+  .groundGlow,
+  .aura,
+  .heatWave,
+  .flame,
+  .innerFlame,
+  .emberBed {
+    animation: none !important;
+  }
+
+  .sparkLayer,
+  .heatWave {
+    display: none;
+  }
+
+  .groundGlow,
+  .aura {
+    opacity: 0.58;
+  }
+}

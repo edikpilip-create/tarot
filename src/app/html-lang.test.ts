@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { spawn } from "node:child_process";
 import { rmSync } from "node:fs";
+import type { Readable } from "node:stream";
 import test from "node:test";
 
 const testPort = 3100;
@@ -98,10 +99,10 @@ function buildEnv(env: Record<string, string>): NodeJS.ProcessEnv {
       ...process.env,
       ...env,
     }).filter((entry): entry is [string, string] => typeof entry[1] === "string"),
-  );
+  ) as NodeJS.ProcessEnv;
 }
 
-function collectOutput(child: ChildProcessWithoutNullStreams): () => string {
+function collectOutput(child: { stdout: Readable; stderr: Readable }): () => string {
   const chunks: string[] = [];
   const collect = (chunk: Buffer) => {
     chunks.push(chunk.toString());
@@ -119,7 +120,7 @@ function collectOutput(child: ChildProcessWithoutNullStreams): () => string {
 
 async function waitForServer(
   url: string,
-  server: ChildProcessWithoutNullStreams,
+  server: { exitCode: number | null },
   getServerOutput: () => string,
 ): Promise<void> {
   const deadline = Date.now() + 30_000;

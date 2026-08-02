@@ -12,6 +12,7 @@ import type { LocaleDictionary } from "@/lib/i18n/types";
 import { createSpreadCards, drawSpreadCards, type SpreadCard, type SpreadCardId } from "@/lib/spread-cards";
 import { getRequestSource } from "@/lib/telegram-source";
 import { getInitialSpreadState, getSpreadResultsScrollTop } from "@/lib/spread-view";
+import { AnimatedCampfire } from "@/components/AnimatedCampfire";
 
 import { LanguageSwitcher } from "./language-switcher";
 
@@ -413,6 +414,9 @@ export default function HomePageClient({ lang, dictionary, assets }: HomePageCli
       </section>
 
       <section id="wisdom" className="section split-section">
+        <div className="campfire-position" aria-hidden="true">
+          <AnimatedCampfire />
+        </div>
         <div className="rich-copy wisdom-copy">
           <h2>{dictionary.wisdom.heading}</h2>
           {dictionary.wisdom.body.map((paragraph) => (
